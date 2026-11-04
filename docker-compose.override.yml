@@ -1,0 +1,33 @@
+# Dev overrides, merged automatically by `docker compose up`.
+# Hot reload for both backend and frontend via bind mounts.
+services:
+  db:
+    ports:
+      - "5433:5432"  # 5433 on host to avoid clashing with a local Postgres
+
+  backend:
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_DEBUG: "1"
+    volumes:
+      - ./backend:/app
+      - media:/app/media
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: bloom-petals-frontend-dev
+    build:
+      context: ./frontend
+      target: dev
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      VITE_API_URL: /api
+      BACKEND_URL: http://backend:8000
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"

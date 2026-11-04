@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+{% block branding %}{% include "unfold/helpers/site_branding.html" %}{% endblock %}
+{% block title %}Dashboard · {{ site_title }}{% endblock %}
+
+{% block content %}
+<p class="bp-eyebrow">Studio</p>
+<h1 class="bp-title">{% now "H" as h %}Good {% if h|add:0 < 12 %}morning{% elif h|add:0 < 18 %}afternoon{% else %}evening{% endif %}{% if user.first_name %}, {{ user.first_name }}{% endif %}.</h1>
+
+<div class="bp-grid bp-grid-5">
+  {% for k in kpis %}
+  <div class="bp-card{% if k.highlight %} bp-card-highlight{% endif %}">
+    <p class="bp-kpi-label">{{ k.label }}</p>
+    <p class="bp-kpi-value">{{ k.value }}</p>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="bp-grid bp-grid-3">
+  <div class="bp-card">
+    <div class="bp-card-head"><h3>Orders, last 7 days</h3></div>
+    <div class="bp-bars">
+      {% for c in chart %}
+      <div class="bp-bar">
+        <b>{{ c.n }}</b>
+        <div class="bp-bar-fill" style="height: {{ c.pct }}%"></div>
+        <span>{{ c.day }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="bp-card">
+    <div class="bp-card-head"><h3>Low stock</h3><a href="/admin/catalog/product/">View all products</a></div>
+    {% if low_stock %}
+    <table class="bp-table">
+      {% for p in low_stock %}
+      <tr>
+        <td><a href="/admin/catalog/product/{{ p.pk }}/change/">{{ p.name }}</a></td>
+        <td class="muted">{{ p.category.name }}</td>
+        <td class="right"><span class="bp-chip {% if p.stock_quantity == 0 %}bp-chip-dark{% else %}bp-chip-warn{% endif %}">{{ p.stock_quantity }} left</span></td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="bp-empty">Everything is well stocked.</p>{% endif %}
+  </div>
+</div>
+
+<div class="bp-grid bp-grid-2">
+  <div class="bp-card">
+    <div class="bp-card-head"><h3>Recent orders</h3><a href="/admin/orders/order/">All orders</a></div>
+    <table class="bp-table">
+      {% for o in recent_orders %}
+      <tr>
+        <td><a href="/admin/orders/order/{{ o.pk }}/change/">{{ o.number }}</a></td>
+        <td class="muted">{{ o.user.email }}</td>
+        <td><span class="bp-chip {% if o.status == 'paid' %}bp-chip-ok{% elif o.status == 'pending' %}bp-chip-warn{% elif o.status == 'fulfilled' %}bp-chip-info{% else %}bp-chip-muted{% endif %}">{{ o.get_status_display }}</span></td>
+        <td class="right">${{ o.total }}</td>
+      </tr>
+      {% empty %}<tr><td class="muted">No orders yet.</td></tr>{% endfor %}
+    </table>
+  </div>
+
+  <div class="bp-card">
+    <div class="bp-card-head"><h3>Recent stock movements</h3><a href="/admin/inventory/stockmovement/">Full log</a></div>
+    <table class="bp-table">
+      {% for m in recent_movements %}
+      <tr>
+        <td>{{ m.product.name }}</td>
+        <td class="muted">{{ m.get_reason_display }}{% if m.reference %} · {{ m.reference }}{% endif %}</td>
+        <td class="right {% if m.quantity_delta < 0 %}bp-neg{% else %}bp-pos{% endif %}">{{ m.quantity_delta|stringformat:"+d" }}</td>
+      </tr>
+      {% empty %}<tr><td class="muted">No movements yet.</td></tr>{% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

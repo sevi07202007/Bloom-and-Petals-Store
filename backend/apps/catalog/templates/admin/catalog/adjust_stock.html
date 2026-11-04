@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Adjust stock · {{ site_title }}{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+<p class="bp-eyebrow">Inventory</p>
+<h1 class="bp-title">Adjust stock</h1>
+<div class="bp-card bp-form">
+  <p class="intro">Every adjustment is recorded in the stock movement log with your name and reason.</p>
+  <div class="bp-products">
+    {% for p in products %}<span class="bp-chip">{{ p.name }}<small>· {{ p.stock_quantity }} in stock</small></span>{% endfor %}
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+      {{ field.errors }}
+    </div>
+    {% endfor %}
+    <div class="bp-actions">
+      <button type="submit" class="bp-btn bp-btn-primary">Apply adjustment</button>
+      <a class="bp-btn bp-btn-secondary" href="/admin/catalog/product/">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

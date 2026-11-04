@@ -1,0 +1,52 @@
+{% extends "unfold/layouts/skeleton.html" %}
+{% load i18n static %}
+{% block title %}Sign in · {{ site_title }}{% endblock %}
+{% block bodyclass %}{{ block.super }}login{% endblock %}
+{% block nav-global %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+{% block usertools %}{% endblock %}
+
+{% block base %}
+<div class="bp-login">
+  <aside class="bp-login-photo" style="background-image: url('{% static 'admin/login-hero.jpg' %}')">
+    <div class="bp-login-photo-overlay"></div>
+    <div class="bp-login-photo-content">
+      <p class="bp-login-brand"><img src="{% static 'admin/logo.svg' %}" alt="" width="36" height="36"> Bloom <em>&amp;</em> Petals</p>
+      <div>
+        <p class="bp-eyebrow" style="color:#f8a7c0">Studio backoffice</p>
+        <p class="bp-login-quote">Stock, orders and the morning market, all in one place.</p>
+      </div>
+    </div>
+  </aside>
+  <main class="bp-login-form">
+    <div class="bp-login-card">
+      <p class="bp-eyebrow">Welcome back</p>
+      <h1 class="bp-title" style="margin-bottom:8px">Sign in</h1>
+      <p class="intro">Use your staff account to manage the shop.</p>
+
+      {% if form.errors and not form.non_field_errors %}
+        <p class="bp-error">{% blocktranslate count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktranslate %}</p>
+      {% endif %}
+      {% for error in form.non_field_errors %}<p class="bp-error">{{ error }}</p>{% endfor %}
+      {% if user.is_authenticated %}
+        <p class="bp-error">{% blocktranslate trimmed %}You are authenticated as {{ username }}, but are not authorized to access this page. Would you like to login to a different account?{% endblocktranslate %}</p>
+      {% endif %}
+
+      <form action="{{ app_path }}" method="post" id="login-form" class="bp-form">
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_username">Email</label>
+          <input type="email" name="username" id="id_username" autofocus required autocomplete="email" placeholder="you@bloom.local">
+        </div>
+        <div class="field">
+          <label for="id_password">Password</label>
+          <input type="password" name="password" id="id_password" required autocomplete="current-password" placeholder="••••••••">
+        </div>
+        <input type="hidden" name="next" value="{{ next|default:'/admin/' }}">
+        <button type="submit" class="bp-btn bp-btn-primary" style="width:100%;padding:12px">Sign in</button>
+      </form>
+      <p class="bp-login-foot"><a href="/">← Back to the storefront</a></p>
+    </div>
+  </main>
+</div>
+{% endblock %}

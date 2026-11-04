@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block breadcrumbs %}{% endblock %}
+{% block branding %}{% include "unfold/helpers/site_branding.html" %}{% endblock %}
+{% block title %}No access · {{ site_title }}{% endblock %}
+{% block content %}
+<div class="bp-errorpage">
+  <div class="bp-bloom">
+    <svg viewBox="0 0 64 64" width="96" height="96" aria-hidden><defs><linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2778a"/><stop offset="1" stop-color="#b53352"/></linearGradient></defs><path d="M32 58 C32 46 26 40 18 38" fill="none" stroke="#3f6145" stroke-width="2.4" stroke-linecap="round"/><path d="M18 38 C11 36 9 30 12 27 C18 27 22 31 18 38 Z" fill="#527a58"/><g transform="translate(32 28)"><ellipse rx="7.5" ry="13" cy="-12" fill="url(#p)"/><ellipse rx="7.5" ry="13" cy="-12" fill="url(#p)" transform="rotate(72)"/><ellipse rx="7.5" ry="13" cy="-12" fill="url(#p)" transform="rotate(144)"/><ellipse rx="7.5" ry="13" cy="-12" fill="url(#p)" transform="rotate(216)"/><ellipse rx="7.5" ry="13" cy="-12" fill="url(#p)" transform="rotate(288)"/><circle r="5.5" fill="#d9b36a"/><circle r="2" cx="-1.5" cy="-1.5" fill="#fdfbf7" opacity=".8"/></g></svg>
+    <span class="bp-fallen" style="left:24px;bottom:20px;width:16px;height:28px;transform:rotate(60deg)"></span>
+    <span class="bp-fallen" style="right:28px;bottom:12px;width:14px;height:24px;transform:rotate(-25deg);background:#e2778a;opacity:.6"></span>
+    <span class="bp-fallen" style="right:56px;bottom:4px;width:12px;height:20px;transform:rotate(15deg);background:#f6d0d5;opacity:1"></span>
+  </div>
+  <p class="bp-eyebrow">403 · No access</p>
+  <h1 class="bp-title" style="margin-bottom:12px">This bed is off limits</h1>
+  <p class="bp-errortext">Your account doesn’t have permission for this action. Ask a superuser to grant it, or sign in with another account.</p>
+  {% if detail %}<p class="bp-errordetail">{{ detail }}</p>{% endif %}
+  <div class="bp-actions" style="justify-content:center;margin-top:28px">
+    <a class="bp-btn bp-btn-primary" href="/admin/">Dashboard</a><a class="bp-btn bp-btn-secondary" href="/admin/logout/">Switch account</a>
+  </div>
+</div>
+{% endblock %}
